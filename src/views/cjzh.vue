@@ -9,11 +9,15 @@
         </div>
         <div class="text">输入条件</div>
         <div class="condition">
-          <mu-text-field v-model="n" placeholder="转速n" help-text="rpm"></mu-text-field>
+          <mu-text-field v-model="W" placeholder="冲击力W" help-text="N"></mu-text-field>
           <br />
-          <mu-text-field v-model="H" placeholder="扬程H" help-text="m"></mu-text-field>
+          <mu-text-field v-model="A" placeholder="作用面积A" help-text="mm^2"></mu-text-field>
           <br />
-          <mu-text-field v-model="Q" placeholder="流量Q" help-text="m^3/s"></mu-text-field>
+          <mu-text-field v-model="E" placeholder="弹性模量E(1000)" help-text="Mpa"></mu-text-field>
+          <br />
+          <mu-text-field v-model="h" placeholder="冲击距离h" help-text="mm"></mu-text-field>
+          <br />
+          <mu-text-field v-model="L" placeholder="物体长度L" help-text="mm"></mu-text-field>
           <br />
         </div>
         <div class="buttons">
@@ -33,10 +37,10 @@
         </div>
         <div class="text">计算结果</div>
         <div class="padding10">
-          <h3 class="myh3">比转速(Ns)=</h3>
+          <h3 class="myh3">冲击载荷产生的应力σ=</h3>
 
           <div id="res">
-            <font color="#f44336">{{res}}</font>
+            <font color="#f44336">{{res}}</font><h3 class="myh3" v-if="show">MPa</h3>
           </div>
         </div>
       </div>
@@ -49,11 +53,11 @@
         </div>
         <div class="text">备注</div>
       </div>
-      <img src="../assets/formula.png" alt width="50%" />
+      <img src="../assets/F2.png" alt width="50%" />
       <div class="center">
         <p
           class="para"
-        >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;比转速（数）是从相似理论中引出来的一个综合性参数，它说明着流量、扬程、转数之间的相互关系。同一台水泵，在不同的工况下具有不同的比转数。一般是取最高效率工况时的比转速（数）做为水泵的比转速（数）。在＝150~250的范围，泵的效率最好，当＜60时，泵的效率显著下降；采用单吸叶轮过大时，可考虑改用双吸，反之采用双吸过小时，可考虑改用单吸叶轮。</p>
+        >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;塑料制品在使用或运输过程中，经常或偶然的撞击会使其变形或断裂。冲击失效是高速负载作用下发生的力学现象。瞬时施加的冲击载荷使塑料件具有很高的应变速率。塑料件的抗冲性能、冲击试验和抗冲保护。至今还是相当复杂的技术问题。</p>
       </div>
     </mu-paper>
   </div>
@@ -63,32 +67,34 @@
 
 export default {
   data() {
-			return {
-				n:"",
-        H:"",
-        Q:"",
-        res:""
-			}
-		},
-  name: 'bzs',
-  components: {
-    
+    return {
+      W:"",
+      A:"",
+      E:"",
+      h:"",
+      L:"",
+      res:"",
+      show:false
+    };
   },
-  methods:{
-    cal(){
-      var result =  (3.65*this.n*(Math.sqrt(this.Q)))/(Math.pow(this.H,3/4));
-      console.log(result.toFixed(3));
+  name: "cjzh",
+  components: {},
+  methods: {
+    cal() {
+      var result = (this.W/this.A)*(1+Math.sqrt(1+((2*this.E*this.A*this.h)/(this.W*this.L))));
       this.res = result.toFixed(3).toString();
+      this.show = true;
     },
-    clear(){
-      this.n = "";
-      this.H = "";
-      this.Q = "";
+    clear() {
+      this.W = "";
+      this.A = "";
+      this.E = "";
+      this.h = "";
+      this.L = "";
       this.res = "";
     }
   }
-
-}
+};
 </script>
 <style scoped>
 .text {
